@@ -1,0 +1,25 @@
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 m-auto">
+      <h1 class="text-center display-4 my-4"> Uploadr</h1>
+      <form>
+        <div class="custom-file mb-3">
+            <input type="file" name="myFile" (change)="fileSelected($event)" class="custom-file-input">
+
+            <label for="file" class="custom-file-label"><p id="displayImgTxt"></p>
+          </label>
+        </div>
+        <button type="button" (click)="upload()" class="btn btn-primary btn-block">Upload</button>
+        </form>
+    </div>
+  </div>
+</div>
+
+
+<div *ngFor = "let address of images" class="card card-body mb-3">
+<img src="http://localhost:3000/api/image/{{address}}">
+<button (click)="delete(address)" class="btn btn-danger btn-block mt-4"> Delete</button>
+</div>
+
