@@ -9,6 +9,13 @@ export class UploadrService {
 
   constructor(private http: HttpClient) { }
 
+  public uploadImages(file){
+    return this.http.post('http://localhost:3000/api/upload', file, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
 
   public getImages(): Observable<string[]> {
     return this.http.get<string[]>('http://localhost:3000/api/load');

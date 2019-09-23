@@ -98,14 +98,14 @@ app.get('/api/image/:filename', (req, res) => {
   })})
 
 var imgAddresses = [];
-conn.collection('uploadrDB.files').distinct("filename").then((data) => {
-  imgAddresses = data;
-});
+
 
 // @route GET/ image addresses
 // @desc Returns addresses of all uploaded images
 app.get('/api/load', (req, res) => {
-  //console.log("route works");
+  conn.collection('uploadrDB.files').distinct("filename").then((data) => {
+    imgAddresses = data;
+  });
   res.json(imgAddresses);
 });
 
@@ -115,7 +115,11 @@ app.delete('/api/delete/:address', (req, res,) => {
   gfs.remove({filename: req.params.address, root: 'uploadrDB'}, (err, gridStore) => {
     if(err) {
       return res.status(404).json({err: err});
+    } else {
+      conn.collection('uploadrDB.files').distinct("filename").then((data) => {
+        imgAddresses = data;
+      });
+      return res.json(imgAddresses)
     }
-    res.redirect('/');
   })
 })

@@ -11,34 +11,49 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 export class UploadrComponent implements OnInit {
   images: string[];
   selected: File = null;
+  filename: string;
+  state: boolean;
+  progress: number;
 
   constructor(private imgService: UploadrService, private http: HttpClient) { }
   // Upon image selection, display the image name
   fileSelected(event) {
     this.selected = event.target.files[0] as File;
-    const display = document.getElementById('displayImgTxt');
-    display.innerHTML = this.selected.name;
-    display.classList.replace('hidden', 'show');
+    this.filename = this.selected.name;
   }
 
   // When the image is uploaded, ask service to make a POST request
   upload() {
+    this.state = true;
     const fd = new FormData();
     fd.append('myFile', this.selected, this.selected.name);
-    return this.http.post('http://localhost:3000/api/upload', fd, {
-      reportProgress: true,
-      observe: 'events'
-    }).subscribe( event => {
+
+    this.imgService.uploadImages(fd).subscribe( event => {
       if (event.type === HttpEventType.UploadProgress) {
-        console.log('Progress: ' + Math.round(event.loaded / event.total * 100) + '%');
+        this.progress = event.loaded / event.total * 100;
+        console.log('Progress: ' + Math.round(this.progress) + '%');
       } else if (event.type === HttpEventType.Response) {
         console.log(event);
       }
+      this.imgService.getImages().subscribe(imgAddresses => {
+        this.images = imgAddresses;
+      });
     });
   }
 
+  clear() {
+    this.state = false;
+    this.progress = 0;
+    this.filename = '';
+  }
+
   delete(address) {
-    this.imgService.deleteImage(address).subscribe();
+    this.imgService.deleteImage(address).subscribe( () => {
+      // update image array
+      this.imgService.getImages().subscribe(imgAddresses => {
+        this.images = imgAddresses;
+      });
+    });
   }
 
 

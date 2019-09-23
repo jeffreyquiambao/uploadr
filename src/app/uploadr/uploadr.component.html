@@ -8,11 +8,18 @@
         <div class="custom-file mb-3">
             <input type="file" name="myFile" (change)="fileSelected($event)" class="custom-file-input">
 
-            <label for="file" class="custom-file-label"><p id="displayImgTxt"></p>
+            <label class="custom-file-label"><p>{{filename}}</p>
           </label>
         </div>
-        <button type="button" (click)="upload()" class="btn btn-primary btn-block">Upload</button>
+        <button [disabled]="state" type="button" (click)="upload()" class="btn btn-primary btn-block">Upload</button>
+        <br>
+        <button type="button" (click)="clear()" class="btn btn-secondary btn-block">Clear</button>
         </form>
+        <br>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" [style.width]="progress+'%'" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <br>
     </div>
   </div>
 </div>
